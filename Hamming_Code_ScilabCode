@@ -1,0 +1,60 @@
+clc ;
+clear all;
+k = 4;//INFORMATION MESSAGE MATRIX LENGTH
+n = 7;//CODEWORD LENGTH
+
+P = [1 1 0;0 1 1 ;1 1 1;1 0 1];//PARITY MATRIX
+disp (P,'PARITY MATRIX');
+G =[eye(k,k) P];//TO CREATE GENERATOR MATRIX IN FORM OF P1P2P3D1D2D3D4
+disp (G,'GENERATOR MATRIX');
+H=[P;eye(n-k,n-k)]'; 
+disp (H,'PARITY CHECKMATRIX');//SWAPING COLOMN 3 AND 4 OF PARITY CHECKMATRIX TO GET GH'=0 
+
+All_M = [0 0 0 0;0 0 0 1;0 0 1 0;0 0 1 1;0 1 0 0;0 1 0 1;0 1 1 0;0 1 1 1;1 0 0 0;1 0 0 1;1 0 1 0;1 0 1 1;1 1 0 0;1 1 0 1;1 1 1 0;1 1 1 1];
+//GENERATED RANDOM MESSAGE 
+//ALL_M IS CREATED TO GET 16 POSSIBILITIES  FOR INFORMATIUON MESSAGE MATRIX
+RandMessage=modulo(round (16* rand ()) ,16) +1;// TO GET RANDOM NUMBER BETWEEN 0 TO 16
+M= All_M(RandMessage,:);//SELECTING A RANDOM ROW FROM 1 TO 16 AS INFORMATION MESSAGE
+
+disp (M,'INFORMATION MESSGAE');
+
+C = M*G;//GENERATION OF CODEWORD
+C = modulo(C ,2);//COVERSION OF CODEWORD INTO BINARY FORM
+disp (C,'Codeword of (7,4) Hamming code');
+R=C;//CREATING A COPY OF THE RECEIVED CODEWORD
+ErrPos =modulo(round(8*rand()),8);//for getting random  number between 0 to 7
+if ErrPos ==0 then
+    //AS '0' MEANS NO ERROR SO KEPT IT EMPTY 
+else
+    if R(ErrPos)==0 then
+        R(ErrPos)=1//INVERTING BIT AT ERRONEOUS BIT POSITION
+    else
+        R(ErrPos)=0//INVERTING BIT AT ERRONEOUS BIT POSITION
+    end
+end
+disp (R,'Recieved Code word R');
+//ERROR CORRECTION
+S=R*H';//FINDING SYNDROME MATRIX
+S=modulo(S,2);//CONVERTING SYNDROME MATRIX INTO BINARY FORM
+disp (S,'Syndrome Matrix RH(transpose)');
+if S ==[0 0 0] then//[0 0 0] INDICATE NO ERROR
+disp (R,'Recieved Code without error');
+disp ([R(3) R (5:7) ],'Recieved Information Message');
+else
+ErrPos =1;
+d=[H(:, ErrPos )]';
+while ((d(1)<>S(1))|(d(2)<>S(2))|(d(3)<>S(3)))
+  ErrPos = ErrPos+1;
+  d=[H(:, ErrPos )]';
+end
+
+disp (ErrPos ,'Erroneous Bit Position');
+
+if R( ErrPos ) ==0 then
+    R( ErrPos )=1;
+    disp (R, 'RECEIVED CODE WITH ERROR CORRECTED');
+else
+    R( ErrPos )=0;
+    disp (R,'RECEIVED CODE WITH ERROR CORRECTED');
+end
+end
