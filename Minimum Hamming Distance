@@ -1,0 +1,4 @@
+Minimum Hamming Distance: Least possible d for all possible codewords
+Detect upto s errors: dmin>=(s+1)
+Correct upto t errors: dmin>=(2t+1)
+Correct upto t errors & Detect upto s errors: dmin>=(t+s+1)
