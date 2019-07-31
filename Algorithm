@@ -1,0 +1,6 @@
+a.	Start
+b.	Input codeword and message matrix length
+c.	Generate Generator matrix and Parity Check matrix
+d.	Generate a random message and a random row from it
+e.	Detect and Correct error
+f.	Print position and corrected error   
